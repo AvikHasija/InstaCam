@@ -1,5 +1,6 @@
 package com.example.avikhasija.instacam;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -22,27 +23,31 @@ public class MainActivity extends ActionBarActivity{
     private static final int CAMERA_REQUEST = 10;
     private static final String TAG = "MainActivity";
     private File mPhoto;
+    private FeedFragment mFeedFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button button = (Button)findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        mFeedFragment = (FeedFragment)getFragmentManager().findFragmentById(R.id.feed_container);
+        if(mFeedFragment == null){
+            mFeedFragment = new FeedFragment();
 
-                File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-                mPhoto = new File(directory, "sample.jpg");
+            getFragmentManager().beginTransaction()
+                    .add(R.id.feed_container, mFeedFragment)
+                    .commit();
+        }
+    }
 
-                i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhoto));
+    public void onClick(View v) {
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                startActivityForResult(i, CAMERA_REQUEST);
+        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        mPhoto = new File(directory, "sample.jpg");
+        i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhoto));
 
-            }
-        });
+        startActivityForResult(i, CAMERA_REQUEST);
     }
 
     @Override
