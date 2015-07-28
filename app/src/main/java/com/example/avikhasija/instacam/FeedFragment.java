@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -30,8 +31,11 @@ public class FeedFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_feed, container, false);
         RecyclerView recyclerView = (RecyclerView)v.findViewById(R.id.feed_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new FeedAdapter(getActivity(), new ArrayList<Photo>()));
-        
+        List<Photo> photos = new ArrayList<Photo>();
+        photos.add(new Photo());
+        photos.add(new Photo());
+        recyclerView.setAdapter(new FeedAdapter(getActivity(), photos));
+
         return v;
     }
 

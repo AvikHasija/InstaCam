@@ -44,7 +44,7 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mPhotos.size();
     }
 
     public FeedAdapter(Context context, List<Photo> photos) {
