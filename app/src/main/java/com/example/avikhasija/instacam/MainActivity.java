@@ -2,6 +2,9 @@ package com.example.avikhasija.instacam;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -10,6 +13,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +22,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import java.io.File;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import it.neokree.materialtabs.MaterialTab;
 import it.neokree.materialtabs.MaterialTabHost;
@@ -37,6 +43,7 @@ public class MainActivity extends ActionBarActivity implements MaterialTabListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         ImageButton cameraFAB = (ImageButton)findViewById(R.id.camera_fab);
         cameraFAB.setOnClickListener(new View.OnClickListener() {
