@@ -9,26 +9,51 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ShareActionProvider;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import java.io.File;
 
+import it.neokree.materialtabs.MaterialTab;
+import it.neokree.materialtabs.MaterialTabHost;
+import it.neokree.materialtabs.MaterialTabListener;
 
-public class MainActivity extends ActionBarActivity{
 
-    private static final int CAMERA_REQUEST = 10;
+public class MainActivity extends ActionBarActivity implements MaterialTabListener{
+
+    private static final int NEW_PHOTO_REQUEST = 10;
     private static final String TAG = "MainActivity";
-    private File mPhoto;
+    private Photo mPhoto;
     private FeedFragment mFeedFragment;
+    private MaterialTabHost mTabBar;
+    private ProfileFragment mProfileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageButton cameraFAB = (ImageButton)findViewById(R.id.camera_fab);
+        cameraFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, NewPhotoActivity.class);
+                startActivityForResult(i, NEW_PHOTO_REQUEST);
+            }
+        });
+
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mTabBar = (MaterialTabHost)findViewById(R.id.tab_bar);
+        mTabBar.addTab(mTabBar.newTab().setIcon(getResources().getDrawable(R.drawable.ic_home)).setTabListener(this));
+        mTabBar.addTab(mTabBar.newTab().setIcon(getResources().getDrawable(R.drawable.ic_profile)).setTabListener(this));
+
 
         mFeedFragment = (FeedFragment)getFragmentManager().findFragmentById(R.id.feed_container);
         if(mFeedFragment == null){
@@ -40,26 +65,47 @@ public class MainActivity extends ActionBarActivity{
         }
     }
 
-    public void onClick(View v) {
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        mPhoto = new File(directory, "sample.jpg");
-        i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhoto));
 
-        startActivityForResult(i, CAMERA_REQUEST);
+    @Override
+    public void onTabSelected(MaterialTab materialTab) {
+        int position = materialTab.getPosition();
+        mTabBar.setSelectedNavigationItem(position);
+
+        Fragment fragment = null;
+        switch (position){
+            case 0:
+                fragment = mFeedFragment;
+                break;
+            case 1:
+                if (mProfileFragment == null){
+                    mProfileFragment = new ProfileFragment();
+                }
+                fragment = mProfileFragment;
+                break;
+        }
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.feed_container, fragment)
+                .commit();
+    }
+
+    @Override
+    public void onTabReselected(MaterialTab materialTab) {
+
+    }
+
+    @Override
+    public void onTabUnselected(MaterialTab materialTab) {
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAMERA_REQUEST){
+        if (requestCode == NEW_PHOTO_REQUEST){
             if (resultCode == RESULT_OK){
-                Log.d(TAG, "Took a picture");
-
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setDataAndType(Uri.fromFile(mPhoto), "image/jpeg");
-
-                startActivity(i);
+                Photo photo = (Photo) data.getSerializableExtra(NewPhotoActivity.PHOTO_EXTRA);
+                mFeedFragment.addPhoto(photo);
             }
         }
     }

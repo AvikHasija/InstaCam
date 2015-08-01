@@ -1,12 +1,50 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+              android:orientation="vertical"
                 tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/feed_container"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:elevation="8dp"
+        android:theme="@style/Base.ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:background="@color/primary"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize">
+    </android.support.v7.widget.Toolbar>
 
-</RelativeLayout>
+    <it.neokree.materialtabs.MaterialTabHost
+        android:id="@+id/tab_bar"
+        android:elevation="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        app:textColor="#FFFFFF"
+        app:hasIcons="true"
+        app:primaryColor="@color/primary"
+        app:accentColor="@color/accent" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/feed_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <ImageButton
+            android:id="@+id/camera_fab"
+            android:src="@drawable/ic_camera"
+            android:elevation="8dp"
+            android:layout_margin="@dimen/vertical_small_margin"
+            android:background="@drawable/fab"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>
