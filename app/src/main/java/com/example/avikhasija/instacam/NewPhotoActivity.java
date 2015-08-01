@@ -15,73 +15,55 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 
-public class NewPhotoActivity extends ActionBarActivity {
+public class NewPhotoActivity extends ActionBarActivity implements NewPhotoFragment.Contract {
     private static final int CAMERA_REQUEST = 10;
     public static final String PHOTO_EXTRA = "PHOTO_EXTRA";
 
     private static final String PHOTO_STATE_EXTRA = "PHOTO";
 
     private Photo mPhoto;
-    private ImageView mPreview;
+    private NewPhotoFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_photo);
 
-        mPreview = (ImageView)findViewById(R.id.photo_preview);
-        final EditText caption = (EditText)findViewById(R.id.new_photo_caption);
-        Button saveButton = (Button)findViewById(R.id.save_new_photo);
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPhoto.setCaption(caption.getText().toString());
-                Intent i = new Intent();
-                i.putExtra(PHOTO_EXTRA, mPhoto);
-                setResult(RESULT_OK, i);
-                finish();
-            }
-        });
+        fragment = (NewPhotoFragment)getFragmentManager().findFragmentById(R.id.new_photo_frag_container);
+        if(fragment == null){
+            fragment = new NewPhotoFragment();
 
-        if (savedInstanceState != null){
-            mPhoto = (Photo) savedInstanceState.getSerializable(PHOTO_STATE_EXTRA);
+            getFragmentManager().beginTransaction()
+                    .add(R.id.new_photo_frag_container, fragment)
+                    .commit();
         }
 
-        if (mPhoto == null) {
-            launchCamera();
-        }
-        else{
-            loadThumbnail(mPhoto);
-        }
     }
 
-    private void launchCamera(){
+    public void launchCamera(){
         Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         mPhoto = new Photo();
         i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhoto.getFile()));
         startActivityForResult(i, CAMERA_REQUEST);
     }
 
-    private void loadThumbnail(Photo photo){
-        Picasso.with(this).load(photo.getFile()).into(mPreview);
-
+    @Override
+    public void finishedPhoto(Photo photo) {
+        Intent i = new Intent();
+        i.putExtra(PHOTO_EXTRA, photo);
+        setResult(RESULT_OK, i);
+        finish();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST){
             if (resultCode == RESULT_OK){
-                loadThumbnail(mPhoto);
+                fragment.updatePhoto(mPhoto);
             }
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putSerializable(PHOTO_STATE_EXTRA, mPhoto);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
