@@ -36,8 +36,15 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Photo photo = mPhotos.get(i);
+        //fetch user from photo
+        User user = photo.getUser();
         Picasso.with(mContext).load(photo.getFile()).into(viewHolder.mPhoto);
         viewHolder.mCaption.setText(photo.getCaption());
+        //set name
+        viewHolder.mUsername.setText(user.getFirstName() + " " +user.getLastName());
+
+        //add profile picture as photo
+        Picasso.with(mContext).load(user.getAvatarURL()).into(viewHolder.mAvatar);
     }
 
     @Override
