@@ -73,16 +73,11 @@ public class LoginActivity extends ActionBarActivity {
                     if (session == Session.getActiveSession()){
                         if (response.getGraphObject() != null){
                             GraphObject graphObject = response.getGraphObject();
-                            String firstName = (String) graphObject.getProperty("first_name");
 
-                            String url = (String) graphObject.getPropertyAs("picture", GraphObject.class)
-                                    .getPropertyAs("data", GraphObject.class)
-                                    .getProperty("url");
+                            User user = new User(graphObject);
 
-                            Log.d(TAG, "URL is " +url);
-
-                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(i);
+//                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+//                            startActivity(i);
                         }
                     }
                     if (response.getError() != null){
