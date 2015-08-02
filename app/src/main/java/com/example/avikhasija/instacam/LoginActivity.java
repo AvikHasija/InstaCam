@@ -74,10 +74,10 @@ public class LoginActivity extends ActionBarActivity {
                         if (response.getGraphObject() != null){
                             GraphObject graphObject = response.getGraphObject();
 
-                            User user = new User(graphObject);
+                            User.setCurrentUser(graphObject);
 
-//                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-//                            startActivity(i);
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(i);
                         }
                     }
                     if (response.getError() != null){

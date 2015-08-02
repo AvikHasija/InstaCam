@@ -20,6 +20,18 @@ public class User {
     private Date mBirthday;
     private String mAvatarURL;
 
+    private static User sCurrentUser;
+
+    public static User getCurrentUser() {
+        return sCurrentUser;
+    }
+
+    public static void setCurrentUser(GraphObject graphObject) {
+        if (sCurrentUser == null){
+            sCurrentUser = new User(graphObject);
+        }
+    }
+
     User(GraphObject graphObject){
 
         mFirstName = (String) graphObject.getProperty("first_name");
